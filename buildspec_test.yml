@@ -1,0 +1,30 @@
+#Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#SPDX-License-Identifier: MIT-0
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto8
+  pre_build:
+    commands:
+      - aws s3 cp sampledata/products.csv s3://$TEST_DATA_S3_BUCKET/products.csv
+      - aws s3 cp sampledata/users.csv s3://$TEST_DATA_S3_BUCKET/users.csv
+      - aws s3 cp sampledata/products_staging.csv s3://$TEST_DATA_S3_BUCKET/products_staging.csv
+      - export TEST_JDBC_URL="jdbc:redshift://$TEST_HOST:$TEST_PORT/$TEST_DB_NAME"
+      - export FLYWAY_URL=$TEST_JDBC_URL
+      - export FLYWAY_USER=$TEST_JDBC_USER
+      - export FLYWAY_PASSWORD=$TEST_JDBC_PASSWORD
+  build:
+    commands:
+      - mvn clean test
+  post_build:
+    commands:
+      - aws s3 rm s3://$TEST_DATA_S3_BUCKET/products.csv
+      - aws s3 rm s3://$TEST_DATA_S3_BUCKET/products_staging.csv
+      - aws s3 rm s3://$TEST_DATA_S3_BUCKET/users.csv
+reports:
+  SurefireReports:
+    files:
+      - '**/*'
+    base-directory: 'target/surefire-reports'
