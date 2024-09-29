@@ -14,7 +14,7 @@
 
     <properties>
         <flyway.version>8.0.2</flyway.version>
-        <redshift-jdbc.version>2.1.0.9</redshift-jdbc.version>
+        <redshift-jdbc.version>2.1.0.28</redshift-jdbc.version>
         <junit.version>5.6.2</junit.version>
         <surefire.version>2.22.0</surefire.version>
         <failsafe.version>2.22.0</failsafe.version>
